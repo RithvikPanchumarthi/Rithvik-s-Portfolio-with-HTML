@@ -151,24 +151,84 @@
 
 					</div>
 
+				<!-- Contact Form Section -->
+					<section id="contact" class="wrapper">
+						<div class="inner">
+							<header class="major">
+								<h2>Get In Touch</h2>
+								<p>Interested in collaborating or discussing data engineering opportunities? I'd love to hear from you!</p>
+							</header>
+							<div class="split style1">
+								<section>
+									<form id="contact-form" method="post" action="https://formspree.io/f/xgvlranb">
+										<div class="fields">
+											<div class="field half">
+												<label for="name">Name</label>
+												<input type="text" name="name" id="name" required />
+											</div>
+											<div class="field half">
+												<label for="email">Email</label>
+												<input type="email" name="email" id="email" required />
+											</div>
+											<div class="field">
+												<label for="subject">Subject</label>
+												<input type="text" name="subject" id="subject" required />
+											</div>
+											<div class="field">
+												<label for="message">Message</label>
+												<textarea name="message" id="message" rows="5" required></textarea>
+											</div>
+										</div>
+										<ul class="actions">
+											<li><input type="submit" value="Send Message" class="primary" /></li>
+											<li><input type="reset" value="Clear" /></li>
+										</ul>
+										<div id="form-status" class="form-status"></div>
+									</form>
+								</section>
+								<section>
+									<div class="contact-info">
+										<div class="contact-method">
+											<span class="icon solid alt fa-envelope"></span>
+											<h3>Email</h3>
+											<a href="mailto:rithvikpanchumarthi@gmail.com">rithvikpanchumarthi@gmail.com</a>
+										</div>
+										<div class="contact-method">
+											<span class="icon solid alt fa-map-marker-alt"></span>
+											<h3>Location</h3>
+											<span>Minneapolis, MN, USA</span>
+										</div>
+										<div class="contact-method">
+											<span class="icon solid alt fa-link"></span>
+											<h3>Connect</h3>
+											<ul class="icons alt">
+												<li><a href="https://www.linkedin.com/in/rithvikpanchumarthi/" class="icon brands alt fa-linkedin"><span class="label">LinkedIn</span></a></li>
+												<li><a href="https://github.com/RithvikPanchumarthi" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+											</ul>
+										</div>
+									</div>
+								</section>
+							</div>
+						</div>
+					</section>
+
 				<!-- Footer -->
 					<footer id="footer">
-						
 						<section class="split contact">
 							<section class="alt">
-								<h3>Location</h3>
-								<p>Minneapolis, MN, USA.<br />
-								</p>
-							</section>
-							
-							<section>
-								<h3>Email</h3>
-								<p><a href="#">rithvikpanchumarthi@gmail.com</a></p>
+								<h3>Quick Links</h3>
+								<ul>
+									<li><a href="#contact">Contact</a></li>
+									<li><a href="https://linktr.ee/rithvikpanchumarthi">All Links</a></li>
+								</ul>
 							</section>
 							<section>
-								<h3>Social</h3>
+								<h3>Professional</h3>
+								<p>Data Engineer specializing in cloud solutions and business intelligence</p>
+							</section>
+							<section>
+								<h3>Follow</h3>
 								<ul class="icons alt">
-									
 									<li><a href="https://www.linkedin.com/in/rithvikpanchumarthi/" class="icon brands alt fa-linkedin"><span class="label">LinkedIn</span></a></li>
 									<li><a href="https://github.com/RithvikPanchumarthi" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
 								</ul>
@@ -188,6 +248,80 @@
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
+			
+			<!-- Contact Form JavaScript -->
+			<script>
+				$(document).ready(function() {
+					$('#contact-form').on('submit', function(e) {
+						e.preventDefault();
+						
+						// Get form data
+						var formData = new FormData(this);
+						var statusDiv = $('#form-status');
+						var submitBtn = $(this).find('input[type="submit"]');
+						
+						// Disable submit button and show loading
+						submitBtn.prop('disabled', true).val('Sending...');
+						statusDiv.removeClass('success error').hide();
+						
+						// Submit form via AJAX
+						$.ajax({
+							url: $(this).attr('action'),
+							method: 'POST',
+							data: formData,
+							processData: false,
+							contentType: false,
+							success: function(response) {
+								statusDiv.addClass('success').html('✅ Thank you! Your message has been sent successfully. I\'ll get back to you soon!').show();
+								$('#contact-form')[0].reset();
+								
+								// Track form submission with Google Analytics
+								if (typeof gtag !== 'undefined') {
+									gtag('event', 'form_submit', {
+										'event_category': 'Contact',
+										'event_label': 'Portfolio Contact Form'
+									});
+								}
+							},
+							error: function(xhr, status, error) {
+								statusDiv.addClass('error').html('❌ Sorry, there was an error sending your message. Please try again or contact me directly at rithvikpanchumarthi@gmail.com').show();
+							},
+							complete: function() {
+								submitBtn.prop('disabled', false).val('Send Message');
+							}
+						});
+					});
+					
+					// Form validation feedback
+					$('#contact-form input, #contact-form textarea').on('blur', function() {
+						var field = $(this);
+						var value = field.val().trim();
+						
+						if (field.prop('required') && !value) {
+							field.css('border-color', '#dc3545');
+						} else if (field.attr('type') === 'email' && value) {
+							var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+							if (!emailRegex.test(value)) {
+								field.css('border-color', '#dc3545');
+							} else {
+								field.css('border-color', '#28a745');
+							}
+						} else if (value) {
+							field.css('border-color', '#28a745');
+						} else {
+							field.css('border-color', '#e0e0e0');
+						}
+					});
+					
+					// Smooth scroll to contact form
+					$('a[href="#contact"]').on('click', function(e) {
+						e.preventDefault();
+						$('html, body').animate({
+							scrollTop: $('#contact').offset().top - 100
+						}, 800);
+					});
+				});
+			</script>
 
 	</body>
 </html>
